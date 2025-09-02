@@ -1,0 +1,37 @@
+1 . Error :  java -jar build/libs/HomeWork-1.0-SNAPSHOT.jar
+
+      Exception in thread "main" java.lang.NoClassDefFoundError: okhttp3/OkHttpClient
+              at org.example.Main.main(Main.java:15)
+      
+      -> Occur when we inject other dependencies in our project , after that try to run Project by CLI
+      
+      The Simple Breakdown:
+      Compiling (javac): This is like checking if your recipe's grammar is correct. The compiler checks that you've spelled OkHttpClient right and that you're using it correctly. It trusts that you'll provide the blender later.
+      
+      Running (java): This is when you actually try to cook the recipe. The JVM needs to follow the step that says "use the blender." It now needs the actual, physical blender to be on the counter. If it's not there, the cooking process stops with the error you saw.
+      
+      Why can't the JVM find it?
+      Because you haven't explicitly told the JVM where to look for the OkHttp library when you run the program.
+      
+      You might have downloaded the library, but...
+      
+      You might have it in your project folder, but...
+      
+      You didn't add it to the classpath for the java command.
+      
+      The classpath is just a list of folders and JAR files where the JVM should search for "instructions" (which are the .class files inside the JAR).
+
+
+Soln : 
+      jar {
+        manifest {
+            attributes 'Main-Class': 'org.example.Main'
+        }
+        
+        // This section includes all dependencies in the jar
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+        
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
